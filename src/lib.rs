@@ -1,5 +1,5 @@
 mod rlex {
-    use regex::Regex;
+    use regex::{Regex, escape};
 
     #[derive(Debug)]
     pub struct Line {
@@ -24,6 +24,7 @@ mod rlex {
 
     #[derive(Debug, PartialEq, Eq, Copy, Clone)]
     pub struct Token {
+        id: &'static str,
         regex: &'static str,
         is_regex: bool
     }
@@ -79,6 +80,10 @@ mod rlex {
     }
 
     impl Token {
+        pub fn id(&self) -> &'static str {
+            &self.id
+        }
+
         pub fn regex(&self) -> &'static str {
             &self.regex
         }
@@ -88,10 +93,10 @@ mod rlex {
         }
     }
 
-    pub fn read_lines(content: String, file: String) -> Vec<Line> {
+    pub fn read_lines(comment: String, content: String, file: String) -> Vec<Line> {
         content.split("\n").enumerate().map(|(i, s)| {
             Line {
-                content: s.split("//").next().unwrap().to_owned(),
+                content: s.split(comment).next().unwrap().to_owned(),
                 line: i,
                 file: file.clone()
             }
@@ -104,8 +109,9 @@ mod rlex {
         }
     }
 
-    pub fn token(regex: &'static str, is_regex: bool) -> Token {
+    pub fn token(id: &'static str, regex: &'static str, is_regex: bool) -> Token {
         Token {
+            id,
             regex,
             is_regex
         }
@@ -126,7 +132,11 @@ mod rlex {
 
                 data.tokens.iter().for_each(|p| {
                     let content = &l.content[index..];
-                    let regex = Regex::new(p.regex).unwrap(); // escape regex if p.is_regex == false
+                    let regex = Regex::new(if p.is_regex {
+                        p.regex
+                    } else {
+                        escape(p.regex)
+                    }).unwrap(); // escape regex if p.is_regex == false
                     let option = regex.find(content);
 
                     if option.is_none() {
@@ -156,10 +166,11 @@ mod rlex {
                 line: l.line,
                 index,
                 line_content: "?".to_owned(),
-                token_type: Token {
-                    regex: "\n",
-                    is_regex: false
-                }
+                token_type: token(
+                    "NEW LINE",
+                    "\n",
+                    false
+                )
             });
         });
 
