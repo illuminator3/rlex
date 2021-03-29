@@ -94,7 +94,7 @@ mod rlex {
     }
 
     pub fn read_lines(comment: String, content: String, file: String) -> Vec<Line> {
-        content.split("\n").enumerate().map(|(i, s)| {
+        content.lines().enumerate().map(|(i, s)| {
             Line {
                 content: s.split(comment).next().unwrap().to_owned(),
                 line: i,
@@ -143,7 +143,7 @@ mod rlex {
                         return;
                     }
 
-                    let found =  option.unwrap();
+                    let found = option.unwrap();
 
                     tokens.push(LexedToken {
                         content: found.as_str().to_owned(),
