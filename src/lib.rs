@@ -96,7 +96,7 @@ mod rlex {
     pub fn read_lines(comment: String, content: String, file: String) -> Vec<Line> {
         content.lines().enumerate().map(|(i, s)| {
             Line {
-                content: s.split(comment).next().unwrap().to_owned(),
+                content: s.split(&comment).next().unwrap().to_owned(),
                 line: i,
                 file: file.clone()
             }
@@ -135,7 +135,7 @@ mod rlex {
                     let regex = Regex::new(if p.is_regex {
                         p.regex
                     } else {
-                        escape(p.regex)
+                        &escape(p.regex)
                     }).unwrap(); // escape regex if p.is_regex == false
                     let option = regex.find(content);
 
