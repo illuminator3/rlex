@@ -117,8 +117,8 @@ mod rlex {
         }
     }
 
-    pub fn full_lex(content: String, file: String, data: LexerData) -> Vec<LexedToken> {
-        lex(read_lines(content, file), data)
+    pub fn full_lex(content: String, file: String, comment: String, data: LexerData) -> Vec<LexedToken> {
+        lex(read_lines(comment, content, file), data)
     }
 
     pub fn lex(lines: Vec<Line>, data: LexerData) -> Vec<LexedToken> {
