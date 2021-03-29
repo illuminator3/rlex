@@ -132,10 +132,10 @@ mod rlex {
 
                 data.tokens.iter().for_each(|p| {
                     let content = &l.content[index..];
-                    let regex = Regex::new(if p.is_regex {
-                        p.regex
+                    let regex = Regex::new(&if p.is_regex {
+                        p.regex.to_owned()
                     } else {
-                        &escape(p.regex)
+                        escape(p.regex)
                     }).unwrap(); // escape regex if p.is_regex == false
                     let option = regex.find(content);
 
