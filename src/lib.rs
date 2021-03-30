@@ -167,7 +167,7 @@ mod rlex {
                 index,
                 line_content: "?".to_owned(),
                 token_type: token(
-                    "NEW LINE",
+                    "NEW_LINE",
                     "\n",
                     false
                 )
